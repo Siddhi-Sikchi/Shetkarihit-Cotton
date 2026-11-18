@@ -1,10 +1,10 @@
 
-name: ShetkariHit CI Pipeline
+name: ShetkariHit CI/CD Pipeline
 
 on:
   push:
     branches:
-      - "**"
+      - main
 
   pull_request:
     branches:
@@ -14,10 +14,6 @@ jobs:
   frontend-ci:
     name: Frontend Test and Build
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
       - name: Checkout Repository
@@ -31,10 +27,28 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install Dependencies
+        working-directory: frontend
         run: npm ci
 
       - name: Run Tests
+        working-directory: frontend
         run: npm test
 
       - name: Build Application
+        working-directory: frontend
         run: npm run build
+
+      - name: Configure AWS Credentials
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deploy to Amazon S3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: aws s3 sync frontend/dist/ s3://${{ vars.S3_BUCKET }}/ --delete
+
+      - name: Invalidate CloudFront Cache
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: aws cloudfront create-invalidation --distribution-id E2JEBZ474K4H2X --paths "/*"
