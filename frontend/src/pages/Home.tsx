@@ -48,6 +48,16 @@ export default function Home() {
 
   return (
     <div className="page-shell dashboard-page">
+      <div style={{
+        background: '#16a34a',
+        color: 'white',
+        textAlign: 'center',
+        padding: '12px',
+        borderRadius: '10px',
+        marginBottom: '16px',
+      }}>
+        🚀 CI/CD Deployment Test - Latest Update!
+      </div>
       <header className="dashboard-topbar">
         <div>
           <p className="eyebrow">ShetkariHit</p>
