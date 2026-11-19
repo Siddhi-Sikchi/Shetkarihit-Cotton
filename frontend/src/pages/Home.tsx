@@ -77,7 +77,7 @@ export default function Home() {
           <h2>Make a better cotton selling decision</h2>
           <span>Check the estimate, its price range and data freshness before you choose a market.</span>
         </div>
-        <button onClick={() => navigate('/prices')}>Open forecast <ArrowIcon /></button>
+        <button onClick={() => navigate('/prices')}style={{backgroundColor: '#16a34a',}}>Open forecast <ArrowIcon /></button>
       </section>
 
       <div className="dashboard-section-title">
